@@ -1,0 +1,23 @@
+
+fsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(€³Ù=8 ÈŠª¥+
+Nsquid:S1135"2Complete the task associated to this TODO comment.(î¢íº8ü¾Àë¥+
+Isquid:S1172"-Remove this unused method parameter "device".(ìêÉ®8ö”‚¥+
+lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(Â«ˆšÿÿÿÿÿ8”ı¾ë¥+
+Ksquid:S00108")Either remove or fill this block of code.(é–³öûÿÿÿÿ8àâ¦è¥+
+lsquid:S3776"RRefactor this method to reduce its Cognitive Complexity from 18 to the 15 allowed.(åîùÿÿÿÿ
+xsquid:S1488"\Immediately return this expression instead of assigning it to the temporary variable "uuid".(ÂÄ¯²8ö”‚¥+
+–squid:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(€¦ş…
+Vsquid:UnusedPrivateMethod",Remove this unused private "getUUID" method.(­ŒÑß8¦õ‚¥+
+xsquid:S1488"\Immediately return this expression instead of assigning it to the temporary variable "uuid".(ĞÖé8ö”‚¥+
+Fsquid:S1135"2Complete the task associated to this TODO comment.(ÿ¿£R
+lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(Ô§öÉşÿÿÿÿ8¦õ‚¥+
+rsquid:S00117"VRename this local variable name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ñ…”Z8ö”‚¥+
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(¹Û–’ûÿÿÿÿ
+gsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(®ğÛ8ÇñŸè¥+
+Zsquid:S1155">Use isEmpty() to check whether the collection is empty or not.(éä¡8şÂ—€¥+
+Fsquid:S1135"2Complete the task associated to this TODO comment.(ÿ¿£R
+xsquid:S1488"\Immediately return this expression instead of assigning it to the temporary variable "uuid".(ÂÄ¯²8ö”‚¥+
+Lsquid:S1135"2Complete the task associated to this TODO comment.(…©óúùÿÿÿÿ
+lsquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(¡»¢üùÿÿÿÿ8Ìş½ë¥+
+]squid:UnusedPrivateMethod"3Remove this unused private "logThreadCount" method.(¶¬Ææ8”ı¾ë¥+
+esquid:CommentedOutCodeLine"<This block of commented-out lines of code should be removed.(û±»ğüÿÿÿÿ
