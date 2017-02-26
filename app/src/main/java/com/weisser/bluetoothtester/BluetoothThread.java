@@ -25,6 +25,14 @@ import java.util.UUID;
 public class BluetoothThread extends Thread {
     private static final String LOGTAG = "BluetoothThread";
 
+    public static final int SUCCESS = 0;
+    public static final int ERR_NO_ADAPTER = 1;
+    public static final int ERR_NO_DEVICE = 2;
+    public static final int ERR_NO_SOCKET = 3;
+    public static final int ERR_SOCKET_CONNECT = 4;
+    public static final int ERR_SOCKET_INPUT_STREAM = 5;
+    public static final int ERR_NO_UUIDS = 6;
+
     protected BluetoothSocket socket;
     protected InputStream inputStream;
     protected InputStreamReader inputStreamReader;
@@ -68,7 +76,7 @@ public class BluetoothThread extends Thread {
         if (bluetoothAdapter == null) {
             Log.e(LOGTAG, "Device does not support bluetooth.");
 
-            return GPSProvider.ERR_NO_ADAPTER;
+            return ERR_NO_ADAPTER;
         } else {
             Log.d(LOGTAG, "BluetoothAdapter: " + bluetoothAdapter);
 
@@ -80,13 +88,13 @@ public class BluetoothThread extends Thread {
             if (device == null) {
                 Log.e(LOGTAG, "Could not open specified device." + getThreadId());
 
-                return GPSProvider.ERR_NO_DEVICE;
+                return ERR_NO_DEVICE;
             } else {
                 Log.d(LOGTAG, "Got the specified device:" + device);
                 Log.i(LOGTAG, "Device class: " + device.getBluetoothClass());
 
                 rc = createSocket(device);
-                if (rc != GPSProvider.SUCCESS) {
+                if (rc != SUCCESS) {
                     return rc;
                 }
 
@@ -98,14 +106,14 @@ public class BluetoothThread extends Thread {
                 int maxConnectRetries = 1;
                 do {
                     rc = connectSocket();
-                } while (--maxConnectRetries > 0 && rc != GPSProvider.SUCCESS);
+                } while (--maxConnectRetries > 0 && rc != SUCCESS);
 
-                if (rc != GPSProvider.SUCCESS) {
+                if (rc != SUCCESS) {
                     return rc;
                 }
 
                 rc = openInputStream();
-                if (rc != GPSProvider.SUCCESS) {
+                if (rc != SUCCESS) {
                     return rc;
                 }
 
@@ -114,7 +122,7 @@ public class BluetoothThread extends Thread {
 
                 Log.d(LOGTAG, "After connect().");
 
-                return GPSProvider.SUCCESS;
+                return SUCCESS;
             }
         }
     }
@@ -147,15 +155,15 @@ public class BluetoothThread extends Thread {
 
                 Log.d(LOGTAG, "Got a socket for " +getThreadId() + " " + socket);
             } else {
-                return GPSProvider.ERR_NO_UUIDS;
+                return ERR_NO_UUIDS;
             }
         } catch (IOException e) {
             Log.e(LOGTAG, "IOException " + getThreadId(), e);
 
-            return GPSProvider.ERR_NO_SOCKET;
+            return ERR_NO_SOCKET;
         }
 
-        return GPSProvider.SUCCESS;
+        return SUCCESS;
     }
 
     private void sendCharacter(byte b) {
@@ -230,11 +238,11 @@ public class BluetoothThread extends Thread {
         try {
             socket.connect();
 
-            return GPSProvider.SUCCESS;
+            return SUCCESS;
         } catch (IOException e) {
             Log.e(LOGTAG, "IOException during socket.connect() " + getThreadId(), e);
 
-            return GPSProvider.ERR_SOCKET_CONNECT;
+            return ERR_SOCKET_CONNECT;
         }
     }
 
@@ -246,11 +254,11 @@ public class BluetoothThread extends Thread {
 
             inputStream = tmpIn;
 
-            return GPSProvider.SUCCESS;
+            return SUCCESS;
         } catch (IOException e) {
             Log.e(LOGTAG, "IOException socket.getInputStream() " + getThreadId(), e);
 
-            return GPSProvider.ERR_SOCKET_INPUT_STREAM;
+            return ERR_SOCKET_INPUT_STREAM;
         }
     }
 
