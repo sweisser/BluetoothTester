@@ -1,11 +1,16 @@
 package com.weisser.bluetoothtester;
 
+import android.bluetooth.BluetoothAdapter;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import static com.weisser.bluetoothtester.BluetoothThread.SUCCESS;
 
 // DONE Add timer and refresh automatically
 // TODO Implement all lifecycle methods correctly
@@ -13,9 +18,11 @@ import android.widget.TextView;
 // TODO Simple recording and charting
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+    private static final String LOGTAG = "MainActivity";
+
     private BluetoothThread bluetoothThread;
 
-    private long startTime = 0;
+    private static final int REQUEST_ENABLE_BT = 1;
 
     //runs without a timer by reposting this handler at the end of the runnable
     Handler timerHandler = new Handler();
@@ -49,15 +56,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onResume() {
         super.onResume();
 
-        if (bluetoothThread != null) {
-            bluetoothThread.interrupt();
+        // Bluetooth active?
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (bluetoothAdapter == null) {
+            // Device does not support Bluetooth
         }
 
-        bluetoothThread = new BluetoothThread();
-        bluetoothThread.initConnection(GPSDevices.BLUETOOTH_BEE);
-        bluetoothThread.start();
+        if (!bluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        } else {
+            if (bluetoothThread != null) {
+                bluetoothThread.interrupt();
+            }
 
-        timerHandler.postDelayed(timerRunnable, 0);
+            bluetoothThread = new BluetoothThread();
+            int rc = bluetoothThread.initConnection(GPSDevices.BLUETOOTH_BEE);
+            if (rc == SUCCESS) {
+                bluetoothThread.start();
+            }
+
+            timerHandler.postDelayed(timerRunnable, 0);
+        }
     }
 
     @Override
@@ -86,7 +106,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final int id = v.getId();
         switch (id) {
             case R.id.startBluetoothButton:
-                startTime = System.currentTimeMillis();
                 timerHandler.postDelayed(timerRunnable, 0);
                 break;
             case R.id.readTemperatureButton:
@@ -104,6 +123,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             double temp = bluetoothThread.readTemperature();
             TextView temperatureView = (TextView) findViewById(R.id.temperatureView);
             temperatureView.setText(Double.toString(temp) + " °C");
+        }
+    }
+
+    @Override
+    public void onActivityResult (int requestCode,
+                           int resultCode,
+                           Intent data) {
+        if (requestCode == REQUEST_ENABLE_BT) {
+            Log.d(LOGTAG, "Bluetooth enabled.");
         }
     }
 }

@@ -56,7 +56,7 @@ public class BluetoothThread extends Thread {
 
     /**
      * Initiates a bluetooth connection for the given macaddress.
-     * Result will be an open socket, stored in the socket member variable.
+     * Result will be an open socket and and inputStream stored in the member variables.
      * If the socket could be opened successfully, the method will also call openConnection().
      *
      * Who calls this?
@@ -103,7 +103,7 @@ public class BluetoothThread extends Thread {
 
                 Log.d(LOGTAG, "Cancel discovery done.");
 
-                int maxConnectRetries = 1;
+                int maxConnectRetries = 5;
                 do {
                     rc = connectSocket();
                 } while (--maxConnectRetries > 0 && rc != SUCCESS);
@@ -151,7 +151,8 @@ public class BluetoothThread extends Thread {
             if (uuid != null) {
                 Log.d(LOGTAG, "Using UUID: " + uuid.toString());
 
-                socket = device.createInsecureRfcommSocketToServiceRecord(uuid);
+                //socket = device.createInsecureRfcommSocketToServiceRecord(uuid);
+                socket = device.createRfcommSocketToServiceRecord(uuid);
 
                 Log.d(LOGTAG, "Got a socket for " +getThreadId() + " " + socket);
             } else {
@@ -234,7 +235,6 @@ public class BluetoothThread extends Thread {
     }
 
     private int connectSocket() {
-        // At this point we do have a socket...
         try {
             socket.connect();
 
@@ -248,15 +248,13 @@ public class BluetoothThread extends Thread {
 
     private int openInputStream() {
         try {
-            // Get the input and output streams, using temp objects because
-            // member streams are final
-            InputStream tmpIn = socket.getInputStream();
-
-            inputStream = tmpIn;
+            this.inputStream = socket.getInputStream();
 
             return SUCCESS;
         } catch (IOException e) {
             Log.e(LOGTAG, "IOException socket.getInputStream() " + getThreadId(), e);
+
+            this.inputStream = null;
 
             return ERR_SOCKET_INPUT_STREAM;
         }
@@ -273,13 +271,8 @@ public class BluetoothThread extends Thread {
         this.setPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
 
         // Keep listening to the InputStream until an exception occurs
-        while (!Thread.currentThread().isInterrupted() && isRunning && socket.isConnected()) {
+        while (!Thread.currentThread().isInterrupted() && isRunning && socket != null && socket.isConnected()) {
             try {
-                // Read all available bytes
-                //updateParserConnectionState();
-
-                //logThreadCount();
-
                 // TODO Convert char to byte using ASCII
                 sendCharacter((byte)'h');
 
@@ -288,16 +281,6 @@ public class BluetoothThread extends Thread {
                 sendCharacter((byte)'t');
 
                 parseTemperature();
-
-                //parse();
-                /*
-                try {
-                    sleep(2000);
-                } catch (InterruptedException e) {
-                    closeConnection();
-                    onFinishThread();
-                }
-                */
 
             } catch (IOException ee) {
                 Log.e(LOGTAG, "IOException", ee);
@@ -318,9 +301,6 @@ public class BluetoothThread extends Thread {
                     isRunning = false;
                 }
             }
-
-            //Log.d(LOGTAG, "instanceCount(" + this + ") = " + instanceCount);
-
         }
 
         closeConnection();
